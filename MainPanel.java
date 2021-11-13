@@ -2,9 +2,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,9 +38,11 @@ public class MainPanel extends JPanel {
 	private JLabel label;
 	private JLabel label2;
 	private JComboBox<String> combo;
+	private JCheckBox reverse;
 	private int count=0;
-
-
+	private double result=0;
+	
+	
 	JMenuBar setupMenu() {
 
 		JMenuBar menuBar = new JMenuBar();
@@ -56,15 +62,12 @@ public class MainPanel extends JPanel {
 		}
 		);
 		
-
 		JMenuItem exit = new JMenuItem("Exit");
 		m1.add(exit);
 		exit.addActionListener(e->
 		System.exit(0)
 		);
 		
-		
-
 		return menuBar;
 	}
 
@@ -91,25 +94,37 @@ public class MainPanel extends JPanel {
 		
 		label2 = new JLabel();
 		
+		reverse=new JCheckBox("Reverse");
+		
+		
 		add(combo);
 		add(inputLabel);
 		add(textField);
 		add(convertButton);
 		add(label);
+		add(reverse);
 		add(clear);
 		add(label2);
 
 		setPreferredSize(new Dimension(800, 80));
 		setBackground(Color.LIGHT_GRAY);
+		
+		CheckBoxListener listener2 = new CheckBoxListener();
+		reverse.addItemListener(listener2);
+		
+		
 	}
-
-	private class ConvertListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent event) {
-
-			String text = textField.getText().trim();
-
+	
+	
+	
+	private class CheckBoxListener implements ItemListener {
+		
+		public void itemStateChanged(ItemEvent item) 
+		{
+			if(reverse.isSelected())
+			{
+				String text = textField.getText().trim();
+				try {
 			if (text.isEmpty() == false) {
 				
 				double value = Double.parseDouble(text);
@@ -144,14 +159,102 @@ public class MainPanel extends JPanel {
 					break;
 				}
 
-				double result = factor * value + offset;
+				result=(value-offset)/factor; //to find the reverse value
 				count++;
-
+				
 				label.setText(Double.toString(result));
 				label2.setText("Number of conversions done= "+count);
+				
+				}
+				
+			}
+			
+			catch(NumberFormatException e)
+			{
+				String error;
+				error="Please enter valid numbers only !!!";
+				JOptionPane.showMessageDialog(new JFrame(), error, "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
 			}
 			
 		}
+	}
+	
+	
+	
+
+	private class ConvertListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			
+			try {
+			String text = textField.getText().trim();
+			
+			if (text.isEmpty() == false){
+				
+				double value = Double.parseDouble(text);
+
+				// the factor applied during the conversion
+				double factor = 0;
+
+				// the offset applied during the conversion.
+				double offset = 0;
+
+				// Setup the correct factor/offset values depending on required conversion
+				switch (combo.getSelectedIndex()) {
+
+				case 0: // inches/cm
+					factor = 2.54;
+					break;
+				case 1: // Degrees/Radians
+					factor = 0.0174;
+					break;
+				case 2: // Acres/Hectares
+					factor = 0.4047;
+					break;
+				case 3: // Miles/Kilometres
+					factor = 1.609;
+					break;
+				case 4: // Yards/Metres
+					factor = 0.9144;
+					break;
+				case 5: // Celsius/Fahrenheit
+					factor = 1.8;
+					offset = 32;
+					break;
+				}
+
+				result = factor * value + offset;
+				count++;
+				label.setText(Double.toString(result));
+				label2.setText("Number of conversions done= "+count);
+				
+				
+			}
+			
+			}
+			catch(NumberFormatException e)
+			{
+				String error;
+				error="Please enter valid numbers only !!";
+				JOptionPane.showMessageDialog(new JFrame(), error, "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			
+			
+			
+			if (textField.getText().isEmpty()==true)
+			{
+				String error;
+				error="No Values Entered !!!";
+				JOptionPane.showMessageDialog(new JFrame(), error, "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+
+		
 	}
 	
 	private class Convertclear implements ActionListener {
@@ -163,5 +266,5 @@ public class MainPanel extends JPanel {
 			label.setText("");
 		}
 	}
-
+	
 }
