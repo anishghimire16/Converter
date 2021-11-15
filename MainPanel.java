@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -49,10 +50,13 @@ public class MainPanel extends JPanel {
 
 		JMenu m1 = new JMenu("File");
 		m1.setMnemonic(KeyEvent.VK_F);
+		m1.setToolTipText("File");
 		JMenu m2 = new JMenu("Help");
 		m2.setMnemonic(KeyEvent.VK_H);
+		m2.setToolTipText("Open Help");
 		JMenu about = new JMenu("About");
 		about.setMnemonic(KeyEvent.VK_A);
+		about.setToolTipText("Open About");
 
 		menuBar.add(m1);
 		menuBar.add(m2);
@@ -67,6 +71,7 @@ public class MainPanel extends JPanel {
 		exit.addActionListener(e->
 		System.exit(0)
 		);
+		exit.setToolTipText("Exit to Window");
 		
 		return menuBar;
 	}
@@ -78,23 +83,28 @@ public class MainPanel extends JPanel {
 
 		combo = new JComboBox<String>(list);
 		combo.addActionListener(listener); //convert values when option changed
+		combo.setToolTipText("Select Conversion");
 
 		JLabel inputLabel = new JLabel("Enter value:");
 
 		JButton convertButton = new JButton("Convert");
 		convertButton.addActionListener(listener); // convert values when pressed
+		convertButton.setToolTipText("Perform Conversion");
 		
 		ActionListener clearlistener = new Convertclear();
 		JButton clear = new JButton("Clear");
 		clear.addActionListener(clearlistener); //clear values when pressed
+		clear.setToolTipText("Clear the text field");
 
 		label = new JLabel("---");
 		textField = new JTextField(5);
 		textField.addActionListener(listener);
+		textField.setToolTipText("Enter the value here");
 		
 		label2 = new JLabel();
 		
 		reverse=new JCheckBox("Reverse");
+		reverse.setToolTipText("Perform reverse conversion");
 		
 		
 		add(combo);
@@ -160,9 +170,11 @@ public class MainPanel extends JPanel {
 				}
 
 				result=(value-offset)/factor; //to find the reverse value
-				count++;
+				count++; 
+				DecimalFormat df=new DecimalFormat("#.##");
+				String temp=df.format(result);
+				label.setText(temp);
 				
-				label.setText(Double.toString(result));
 				label2.setText("Number of conversions done= "+count);
 				
 				}
@@ -228,7 +240,9 @@ public class MainPanel extends JPanel {
 
 				result = factor * value + offset;
 				count++;
-				label.setText(Double.toString(result));
+				DecimalFormat df=new DecimalFormat("#.##");
+				String temp=df.format(result);
+				label.setText(temp);
 				label2.setText("Number of conversions done= "+count);
 				
 				
@@ -264,6 +278,7 @@ public class MainPanel extends JPanel {
 			count=0;
 			label2.setText("Number of conversions done= "+count);
 			label.setText("");
+			
 		}
 	}
 	
