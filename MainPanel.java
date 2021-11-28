@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 
@@ -37,39 +36,51 @@ public class MainPanel extends JPanel {
 	private final static String[] list = { "inches/cm", "Degrees/Radians", "Acres/Hectares", "Miles/Kilometres", "Yards/Metres", "Celsius/Fahrenheit" };
 	private JTextField textField;
 	private JLabel label;
-	private JLabel label2;
+	private JLabel countlabel;
 	private JComboBox<String> combo;
 	private JCheckBox reverse;
 	private int count=0;
 	private double result=0;
+	private String unit1;
+	private JLabel unitlabel1;
+	private String unit2;
+	private JLabel unitlabel2;
 	
 	
 	JMenuBar setupMenu() {
 
 		JMenuBar menuBar = new JMenuBar();
 
-		JMenu m1 = new JMenu("File");
-		m1.setMnemonic(KeyEvent.VK_F);
-		m1.setToolTipText("File");
-		JMenu m2 = new JMenu("Help");
-		m2.setMnemonic(KeyEvent.VK_H);
-		m2.setToolTipText("Open Help");
+		JMenu file = new JMenu("File");
+		file.setMnemonic(KeyEvent.VK_F);
+		file.setToolTipText("File");
+		JMenu help = new JMenu("Help");
+		help.setMnemonic(KeyEvent.VK_H);
+		help.setToolTipText("Open Help");
 		JMenu about = new JMenu("About");
-		about.setMnemonic(KeyEvent.VK_A);
+		about.setMnemonic(KeyEvent.VK_M);
 		about.setToolTipText("Open About");
 
-		menuBar.add(m1);
-		menuBar.add(m2);
-		menuBar.add(about);
-		about.addActionListener(e->{
+		menuBar.add(file);
+		menuBar.add(help);
+		
+		help.add(about);
+		about.addActionListener(e->
+		{
 			JOptionPane.showMessageDialog(new JFrame(), "Author : @AnishGhimire \n Welcome Boys");
-		}
-		);
+		});
+		//JOptionPane.showMessageDialog(new JFrame(), "Author : @AnishGhimire \n Welcome Boys");
+		
 		
 		JMenuItem exit = new JMenuItem("Exit");
-		m1.add(exit);
+		file.add(exit);
+		exit.setMnemonic(KeyEvent.VK_E);
 		exit.addActionListener(e->
-		System.exit(0)
+		{
+			int stat = JOptionPane.showConfirmDialog(new JFrame(),"Do you really want to exit ?", "Exit Program Confirmation", JOptionPane.YES_NO_OPTION);
+			if (stat==JOptionPane.YES_OPTION)
+				System.exit(0);
+		}
 		);
 		exit.setToolTipText("Exit to Window");
 		
@@ -82,7 +93,7 @@ public class MainPanel extends JPanel {
 		ActionListener listener = new ConvertListener();
 
 		combo = new JComboBox<String>(list);
-		combo.addActionListener(listener); //convert values when option changed
+//		combo.addActionListener(listener); //convert values when option changed
 		combo.setToolTipText("Select Conversion");
 
 		JLabel inputLabel = new JLabel("Enter value:");
@@ -101,20 +112,24 @@ public class MainPanel extends JPanel {
 		textField.addActionListener(listener);
 		textField.setToolTipText("Enter the value here");
 		
-		label2 = new JLabel();
+		countlabel = new JLabel();
 		
 		reverse=new JCheckBox("Reverse");
 		reverse.setToolTipText("Perform reverse conversion");
 		
+		unitlabel1=new JLabel();
+		unitlabel2=new JLabel();
 		
 		add(combo);
 		add(inputLabel);
 		add(textField);
+		add(unitlabel1);
 		add(convertButton);
 		add(label);
+		add(unitlabel2);
 		add(reverse);
 		add(clear);
-		add(label2);
+		add(countlabel);
 
 		setPreferredSize(new Dimension(800, 80));
 		setBackground(Color.LIGHT_GRAY);
@@ -149,33 +164,54 @@ public class MainPanel extends JPanel {
 				switch (combo.getSelectedIndex()) {
 
 				case 0: // inches/cm
-					factor = 2.54;
+					factor = 0.394;
+					unit1="cm";
+					unit2="inches";
 					break;
 				case 1: // Degrees/Radians
-					factor = 0.0174;
+					factor = 57.296;
+					unit1="radian";
+					unit2="degree";
 					break;
 				case 2: // Acres/Hectares
-					factor = 0.4047;
+					factor = 2.471;
+					unit1="hectares";
+					unit2="acres";
 					break;
 				case 3: // Miles/Kilometres
-					factor = 1.609;
+					factor = 0.621;
+					unit1="Kilometres";
+					unit2="miles";
 					break;
 				case 4: // Yards/Metres
-					factor = 0.9144;
+					factor = 1.094;
+					unit1="Metres";
+					unit2="yards";
 					break;
 				case 5: // Celsius/Fahrenheit
-					factor = 1.8;
-					offset = 32;
+					factor = 0.556;
+					offset = -17.78;
+					unit1="Fahrenheit";
+					unit2="celsius";
 					break;
+				case 6: //Pounds/Kilogram
+					factor = 2.205;
+					offset = 0;
+					unit1="Kilogram";
+					unit2="pounds";
 				}
 
-				result=(value-offset)/factor; //to find the reverse value
+				result=factor*value+offset ;//to find the reverse value
 				count++; 
 				DecimalFormat df=new DecimalFormat("#.##");
 				String temp=df.format(result);
 				label.setText(temp);
 				
-				label2.setText("Number of conversions done= "+count);
+				unitlabel1.setText(unit1);
+				
+				countlabel.setText("Number of conversions done= "+count);
+				unitlabel2.setText(unit2);
+				
 				
 				}
 				
@@ -219,22 +255,40 @@ public class MainPanel extends JPanel {
 
 				case 0: // inches/cm
 					factor = 2.54;
+					unit1="inches";
+					unit2="cm";
 					break;
 				case 1: // Degrees/Radians
 					factor = 0.0174;
+					unit1="degree";
+					unit2="radian";
 					break;
 				case 2: // Acres/Hectares
 					factor = 0.4047;
+					unit1="Acres";
+					unit2="Hectares";
 					break;
 				case 3: // Miles/Kilometres
 					factor = 1.609;
+					unit1="Miles";
+					unit2="Kilometres";
 					break;
 				case 4: // Yards/Metres
 					factor = 0.9144;
+					unit1="Yards";
+					unit2="Metres";
 					break;
 				case 5: // Celsius/Fahrenheit
 					factor = 1.8;
 					offset = 32;
+					unit1="Celsius";
+					unit2="Fahrenheit";
+					break;
+				case 6: //Pounds/Kilogram
+					factor=0.45;
+					offset = 0;
+					unit1="Pounds";
+					unit2="kilogram";
 					break;
 				}
 
@@ -243,7 +297,10 @@ public class MainPanel extends JPanel {
 				DecimalFormat df=new DecimalFormat("#.##");
 				String temp=df.format(result);
 				label.setText(temp);
-				label2.setText("Number of conversions done= "+count);
+				countlabel.setText("Number of conversions done= "+count);
+				
+				unitlabel1.setText(unit1);
+				unitlabel2.setText(unit2);
 				
 				
 			}
@@ -276,8 +333,10 @@ public class MainPanel extends JPanel {
 		public void actionPerformed(ActionEvent event) {
 			textField.setText("");
 			count=0;
-			label2.setText("Number of conversions done= "+count);
+			countlabel.setText("Number of conversions done= "+count);
 			label.setText("");
+			unitlabel1.setText("");
+			unitlabel2.setText("");
 			
 		}
 	}
