@@ -7,6 +7,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -54,9 +55,11 @@ public class MainPanel extends JPanel {
 		JMenu file = new JMenu("File");
 		file.setMnemonic(KeyEvent.VK_F);
 		file.setToolTipText("File");
+		file.setIcon(new ImageIcon("file.png"));
 		JMenu help = new JMenu("Help");
 		help.setMnemonic(KeyEvent.VK_H);
 		help.setToolTipText("Open Help");
+		help.setIcon(new ImageIcon("help.png"));
 		JMenu about = new JMenu("About");
 		about.setMnemonic(KeyEvent.VK_M);
 		about.setToolTipText("Open About");
@@ -69,7 +72,6 @@ public class MainPanel extends JPanel {
 		{
 			JOptionPane.showMessageDialog(new JFrame(), "Author : @AnishGhimire \n Welcome Boys");
 		});
-		//JOptionPane.showMessageDialog(new JFrame(), "Author : @AnishGhimire \n Welcome Boys");
 		
 		
 		JMenuItem exit = new JMenuItem("Exit");
