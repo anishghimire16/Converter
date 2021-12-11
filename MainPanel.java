@@ -34,9 +34,9 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel {
 
-	private final static String[] list = { "inches/cm", "Degrees/Radians", "Acres/Hectares", "Miles/Kilometres", "Yards/Metres", "Celsius/Fahrenheit" };
+	private final static String[] list = { "inches/cm", "Degrees/Radians", "Acres/Hectares", "Miles/Kilometres", "Yards/Metres", "Celsius/Fahrenheit", "Pounds/Kilograms"};
 	private JTextField textField;
-	private JLabel label;
+	private JLabel result_label;
 	private JLabel countlabel;
 	private JComboBox<String> combo;
 	private JCheckBox reverse;
@@ -53,38 +53,41 @@ public class MainPanel extends JPanel {
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu file = new JMenu("File");
-		file.setMnemonic(KeyEvent.VK_F);
-		file.setToolTipText("File");
-		file.setIcon(new ImageIcon("file.png"));
+		file.setMnemonic(KeyEvent.VK_F); //sets shortcut to file option
+		file.setToolTipText("File"); //sets tooltips for file
+		file.setIcon(new ImageIcon("file.png")); //sets icon for file
 		JMenu help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H);
-		help.setToolTipText("Open Help");
-		help.setIcon(new ImageIcon("help.png"));
-		JMenu about = new JMenu("About");
-		about.setMnemonic(KeyEvent.VK_M);
-		about.setToolTipText("Open About");
-
-		menuBar.add(file);
-		menuBar.add(help);
+		help.setMnemonic(KeyEvent.VK_H); //sets shortcut to help option
+		help.setToolTipText("Open Help"); //sets tooltips for help
+		help.setIcon(new ImageIcon("help.png")); //sets icon for help
 		
-		help.add(about);
+		menuBar.add(file); //adds file to the menubar
+		menuBar.add(help); //adds help to the menubar
+		
+		JMenuItem about = new JMenuItem("About");
+		help.add(about); //adds about option inside help
+		about.setMnemonic(KeyEvent.VK_A); //sets shortcut to about option
+		about.setToolTipText("Open About"); //sets tooltips for about
 		about.addActionListener(e->
+		//show message dialouge box
 		{
-			JOptionPane.showMessageDialog(new JFrame(), "Author : @AnishGhimire \n Welcome Boys");
+			JOptionPane.showMessageDialog(new JFrame(), "Use this software to perform various unit based conversions \n @Author : Anish Ghimire \n Copyright 2021");
 		});
 		
 		
 		JMenuItem exit = new JMenuItem("Exit");
-		file.add(exit);
-		exit.setMnemonic(KeyEvent.VK_E);
+		file.add(exit); //adds exit option inside file
+		exit.setMnemonic(KeyEvent.VK_E); //sets shortcut to exit option
+		exit.setToolTipText("Exit to Window"); //sets tooltips for exit
 		exit.addActionListener(e->
+		//show confirmation dialouge box
 		{
 			int stat = JOptionPane.showConfirmDialog(new JFrame(),"Do you really want to exit ?", "Exit Program Confirmation", JOptionPane.YES_NO_OPTION);
 			if (stat==JOptionPane.YES_OPTION)
-				System.exit(0);
+				System.exit(0); 
 		}
 		);
-		exit.setToolTipText("Exit to Window");
+		
 		
 		return menuBar;
 	}
@@ -109,25 +112,26 @@ public class MainPanel extends JPanel {
 		clear.addActionListener(clearlistener); //clear values when pressed
 		clear.setToolTipText("Clear the text field");
 
-		label = new JLabel("---");
+		result_label = new JLabel("---");
 		textField = new JTextField(5);
-		textField.addActionListener(listener);
+		textField.addActionListener(listener); //convert values when return is pressed in textfield
 		textField.setToolTipText("Enter the value here");
 		
-		countlabel = new JLabel();
+		countlabel = new JLabel(); //label to display the total number of conversions performed
 		
-		reverse=new JCheckBox("Reverse");
+		reverse=new JCheckBox("Reverse"); 
 		reverse.setToolTipText("Perform reverse conversion");
 		
-		unitlabel1=new JLabel();
-		unitlabel2=new JLabel();
+		unitlabel1=new JLabel(); //label to display unit of value to be converted 
+		unitlabel2=new JLabel(); //label to display unit of converted value
 		
+		//adding components inside main panel
 		add(combo);
 		add(inputLabel);
 		add(textField);
 		add(unitlabel1);
 		add(convertButton);
-		add(label);
+		add(result_label);
 		add(unitlabel2);
 		add(reverse);
 		add(clear);
@@ -137,13 +141,13 @@ public class MainPanel extends JPanel {
 		setBackground(Color.LIGHT_GRAY);
 		
 		CheckBoxListener listener2 = new CheckBoxListener();
-		reverse.addItemListener(listener2);
+		reverse.addItemListener(listener2); //perform reverse conversion when ticked
 		
 		
 	}
 	
 	
-	
+	//perform reverse conversion
 	private class CheckBoxListener implements ItemListener {
 		
 		public void itemStateChanged(ItemEvent item) 
@@ -205,13 +209,13 @@ public class MainPanel extends JPanel {
 
 				result=factor*value+offset ;//to find the reverse value
 				count++; 
-				DecimalFormat df=new DecimalFormat("#.##");
+				DecimalFormat df=new DecimalFormat("#.##"); //to give output in two decimal points
 				String temp=df.format(result);
-				label.setText(temp);
+				result_label.setText("= "+temp);
 				
-				unitlabel1.setText(unit1);
+				unitlabel1.setText(unit1); 
 				
-				countlabel.setText("Number of conversions done= "+count);
+				countlabel.setText("Number of conversions done= "+count); //shows the count for number of conversions performed
 				unitlabel2.setText(unit2);
 				
 				
@@ -219,7 +223,7 @@ public class MainPanel extends JPanel {
 				
 			}
 			
-			catch(NumberFormatException e)
+			catch(NumberFormatException e) //to show error message for invalid number-format entry
 			{
 				String error;
 				error="Please enter valid numbers only !!!";
@@ -232,8 +236,7 @@ public class MainPanel extends JPanel {
 	}
 	
 	
-	
-
+	//perform Normal Conversion
 	private class ConvertListener implements ActionListener {
 
 		@Override
@@ -294,12 +297,12 @@ public class MainPanel extends JPanel {
 					break;
 				}
 
-				result = factor * value + offset;
+				result = factor * value + offset; //to get the converted value
 				count++;
-				DecimalFormat df=new DecimalFormat("#.##");
+				DecimalFormat df=new DecimalFormat("#.##"); //to give output in two decimal points
 				String temp=df.format(result);
-				label.setText(temp);
-				countlabel.setText("Number of conversions done= "+count);
+				result_label.setText("= "+temp);
+				countlabel.setText("Number of conversions done= "+count); //shows the count for number of conversions performed
 				
 				unitlabel1.setText(unit1);
 				unitlabel2.setText(unit2);
@@ -330,13 +333,14 @@ public class MainPanel extends JPanel {
 		
 	}
 	
+	//resets the textfields, labels and counts
 	private class Convertclear implements ActionListener {
 		
 		public void actionPerformed(ActionEvent event) {
 			textField.setText("");
 			count=0;
 			countlabel.setText("Number of conversions done= "+count);
-			label.setText("");
+			result_label.setText("---");
 			unitlabel1.setText("");
 			unitlabel2.setText("");
 			
