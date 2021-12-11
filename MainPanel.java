@@ -2,8 +2,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
 
@@ -29,7 +27,7 @@ import javax.swing.JTextField;
  * 
  * You may want to start by improving the variable names and commenting what the existing code does.
  * 
- * @author mdixon
+ * @author Anish Ghimire
  */
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel {
@@ -53,11 +51,11 @@ public class MainPanel extends JPanel {
 		JMenuBar menuBar = new JMenuBar();
 
 		JMenu file = new JMenu("File");
-		file.setMnemonic(KeyEvent.VK_F); //sets shortcut to file option
+		file.setMnemonic(KeyEvent.VK_F); //sets shortcut to open file
 		file.setToolTipText("File"); //sets tooltips for file
 		file.setIcon(new ImageIcon("file.png")); //sets icon for file
 		JMenu help = new JMenu("Help");
-		help.setMnemonic(KeyEvent.VK_H); //sets shortcut to help option
+		help.setMnemonic(KeyEvent.VK_H); //sets shortcut to open help
 		help.setToolTipText("Open Help"); //sets tooltips for help
 		help.setIcon(new ImageIcon("help.png")); //sets icon for help
 		
@@ -66,7 +64,7 @@ public class MainPanel extends JPanel {
 		
 		JMenuItem about = new JMenuItem("About");
 		help.add(about); //adds about option inside help
-		about.setMnemonic(KeyEvent.VK_A); //sets shortcut to about option
+		about.setMnemonic(KeyEvent.VK_A); //sets shortcut to about
 		about.setToolTipText("Open About"); //sets tooltips for about
 		about.addActionListener(e->
 		//show message dialouge box
@@ -140,103 +138,9 @@ public class MainPanel extends JPanel {
 		setPreferredSize(new Dimension(800, 80));
 		setBackground(Color.LIGHT_GRAY);
 		
-		CheckBoxListener listener2 = new CheckBoxListener();
-		reverse.addItemListener(listener2); //perform reverse conversion when ticked
-		
-		
 	}
 	
-	
-	//perform reverse conversion
-	private class CheckBoxListener implements ItemListener {
-		
-		public void itemStateChanged(ItemEvent item) 
-		{
-			if(reverse.isSelected())
-			{
-				String text = textField.getText().trim();
-				try {
-			if (text.isEmpty() == false) {
-				
-				double value = Double.parseDouble(text);
-
-				// the factor applied during the conversion
-				double factor = 0;
-
-				// the offset applied during the conversion.
-				double offset = 0;
-
-				// Setup the correct factor/offset values depending on required conversion
-				switch (combo.getSelectedIndex()) {
-
-				case 0: // inches/cm
-					factor = 0.394;
-					unit1="cm";
-					unit2="inches";
-					break;
-				case 1: // Degrees/Radians
-					factor = 57.296;
-					unit1="radian";
-					unit2="degree";
-					break;
-				case 2: // Acres/Hectares
-					factor = 2.471;
-					unit1="hectares";
-					unit2="acres";
-					break;
-				case 3: // Miles/Kilometres
-					factor = 0.621;
-					unit1="Kilometres";
-					unit2="miles";
-					break;
-				case 4: // Yards/Metres
-					factor = 1.094;
-					unit1="Metres";
-					unit2="yards";
-					break;
-				case 5: // Celsius/Fahrenheit
-					factor = 0.556;
-					offset = -17.78;
-					unit1="Fahrenheit";
-					unit2="celsius";
-					break;
-				case 6: //Pounds/Kilogram
-					factor = 2.205;
-					offset = 0;
-					unit1="Kilogram";
-					unit2="pounds";
-				}
-
-				result=factor*value+offset ;//to find the reverse value
-				count++; 
-				DecimalFormat df=new DecimalFormat("#.##"); //to give output in two decimal points
-				String temp=df.format(result);
-				result_label.setText("= "+temp);
-				
-				unitlabel1.setText(unit1); 
-				
-				countlabel.setText("Number of conversions done= "+count); //shows the count for number of conversions performed
-				unitlabel2.setText(unit2);
-				
-				
-				}
-				
-			}
-			
-			catch(NumberFormatException e) //to show error message for invalid number-format entry
-			{
-				String error;
-				error="Please enter valid numbers only !!!";
-				JOptionPane.showMessageDialog(new JFrame(), error, "Error", JOptionPane.ERROR_MESSAGE);
-			}
-			
-			}
-			
-		}
-	}
-	
-	
-	//perform Normal Conversion
+//Main Logic for the Program	
 	private class ConvertListener implements ActionListener {
 
 		@Override
@@ -259,41 +163,106 @@ public class MainPanel extends JPanel {
 				switch (combo.getSelectedIndex()) {
 
 				case 0: // inches/cm
+					if(reverse.isSelected())
+					{
+						factor = 0.393701;
+						unit1="cm";
+						unit2="inches";
+					}
+					else
+					{
 					factor = 2.54;
 					unit1="inches";
 					unit2="cm";
+					}
 					break;
 				case 1: // Degrees/Radians
+					if(reverse.isSelected())
+					{
+						factor = 57.296;
+						unit1="radian";
+						unit2="degree";
+					}
+					else
+					{
 					factor = 0.0174;
 					unit1="degree";
 					unit2="radian";
+					}
 					break;
 				case 2: // Acres/Hectares
+					if(reverse.isSelected())
+					{
+						factor = 2.471;
+						unit1="Hectares";
+						unit2="Acres";
+					}
+					else
+					{
 					factor = 0.4047;
 					unit1="Acres";
 					unit2="Hectares";
+					}
 					break;
 				case 3: // Miles/Kilometres
+					if(reverse.isSelected())
+					{
+						factor = 0.621;
+						unit1="Kilometres";
+						unit2="Miles";
+					}
+					else
+					{
 					factor = 1.609;
 					unit1="Miles";
 					unit2="Kilometres";
+					}
 					break;
 				case 4: // Yards/Metres
+					if(reverse.isSelected())
+					{
+						factor = 1.094;
+						unit1="Metres";
+						unit2="Yards";
+					}
+					else
+					{
 					factor = 0.9144;
 					unit1="Yards";
 					unit2="Metres";
+					}
 					break;
 				case 5: // Celsius/Fahrenheit
+					if(reverse.isSelected())
+					{
+						factor = 0.556;
+						offset=-17.78;
+						unit1="Fahrenheit";
+						unit2="Celsius";
+					}
+					else
+					{
 					factor = 1.8;
 					offset = 32;
 					unit1="Celsius";
 					unit2="Fahrenheit";
+					}
+					
 					break;
 				case 6: //Pounds/Kilogram
-					factor=0.45;
+					if(reverse.isSelected())
+					{
+						factor = 2.205;
+						unit1="Kilogram";
+						unit2="Pounds";
+					}
+					else
+					{
+					factor=0.454;
 					offset = 0;
 					unit1="Pounds";
 					unit2="kilogram";
+					}
 					break;
 				}
 
@@ -311,7 +280,7 @@ public class MainPanel extends JPanel {
 			}
 			
 			}
-			catch(NumberFormatException e)
+			catch(NumberFormatException e)  //shows error message if input other than numbers in entered
 			{
 				String error;
 				error="Please enter valid numbers only !!";
@@ -320,8 +289,8 @@ public class MainPanel extends JPanel {
 			
 			
 			
-			
-			if (textField.getText().isEmpty()==true)
+			//gives error message if the textbox for input is empty
+			if (textField.getText().isEmpty()==true) 
 			{
 				String error;
 				error="No Values Entered !!!";
@@ -333,7 +302,7 @@ public class MainPanel extends JPanel {
 		
 	}
 	
-	//resets the textfields, labels and counts
+	//resets the textfields, labels and counts once the clear button is pressed
 	private class Convertclear implements ActionListener {
 		
 		public void actionPerformed(ActionEvent event) {
